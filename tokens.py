@@ -3,10 +3,10 @@ import ply.lex as lex
 
 
 tokens = ["LPAREN", "RPAREN", "DEFVAR", "VAR", "NAME", "MOVE", "SKIP", "TURND", "FACE0", "PUT", "PICK", "MOVEDIR", "RUNDIR",
-    "MOVEFACE", "NULL", "DIM", "MYXPOS", "MYYPOS", "MYCHIPS", "MYBALLOONS", "BALLOONSHERE",
-    "CHIPSHERE", "SPACES", "IF", "LOOP", "REPEAT", "DEFUN", "FACING", "BLOCKED", "CANPUT",
-    "CANPICK", "CANMOVE", "ISZERO", "NOTCOND", "NUMBER", "RUN", "DROP", "LEFT", "RIGHT", "DOWN", "UP" , "COLON" ]
-# Palabras reservadas
+    "MOVEFACE", "NULL", "DIM", "MYXPOS", "MYYPOS", "MYCHIPS", "MYBALLOONS", "BALLOONSHERE", "CHIPSHERE", "SPACES", "IF", "LOOP", "REPEAT", "DEFUN", "FACING", "BLOCKED", "CANPUT",
+    "CANPICK", "CANMOVE", "ISZERO", "NOTCOND", "NUMBER", "RUN", "DROP", "LEFT", "RIGHT", "DOWN", "UP" , "COLON" , "DIRECTION", "BALLOONS", "SELECT", 
+    "CHIPS"]
+
 reserved = {
     "if": "IF",
     "loop": "LOOP",
@@ -32,17 +32,24 @@ reserved = {
 }
 
 
-#repeat , defun , iszero , notcond , run , drop , directions
+
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COLON = r'\:'
 t_ignore = ' \t'
 
+def t_SELECT(t):
+    r"chips|balloons"
+    return t 
+
+def t_DIRECTION(t):
+    r'(left|right|up|front|back|down|around)'
+    return t
 
 def t_IDENTIFIER(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value.lower(), 'NAME')  # Asignar 'NAME' como tipo predeterminado
+    t.type = reserved.get(t.value.lower(), 'NAME')  
     return t
 
 def t_DEFVAR(t):
@@ -139,11 +146,11 @@ def t_MYXPOS(t):
 
 
 def t_MYCHIPS(t):
-    r":chips"
+    r"chips"
     return t
 
 def t_MYBALLOONS(t):
-    r":balloons"
+    r"balloons"
     return t
 
 def t_BALLOONSHERE(t):
@@ -202,7 +209,7 @@ def t_DIRECTIONS(t):
     return t
 
 def t_error(t):
-    t.lexer.skip(1)  # Ignorar el caracter no válido
+    t.lexer.skip(1)  
 
 def t_newline(t):
     r'\n+'
