@@ -199,8 +199,7 @@ results = []
 for line in lines:
     tokens = tokenize(line)
     result = parse_instruction(tokens)
-    print(tokens)
-    print(result)
+    
     results.append(result)
 
 
